@@ -2,8 +2,8 @@ import { SetAuthKey } from "@/components/auth/Auth";
 import Client from "@/components/Client";
 import { NextResponse } from "next/server";
 
-const client = Client();
 export async function POST(req){
+    const client = Client();
     var data = null;
     try {
         const { username, password } = await req.json();
@@ -15,6 +15,7 @@ export async function POST(req){
         data = "error";
         console.error(err);
     }
+    client.end();
     
     return NextResponse.json(data);
 }
