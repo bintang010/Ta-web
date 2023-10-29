@@ -1,23 +1,32 @@
 import { Container, Grid, Group, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import NewsForm from "../admin/News";
+import { useState } from "react";
 
 async function fetchNews(){
     const res = await fetch(location.origin + "/api/news");
     return await res.json();
 }
 
-export default function News(){
-    const { data, isError, isLoading } = useQuery({ queryKey: ["news"], queryFn: fetchNews });
-    
+export default function News({ isAdmin }){
+    const [newsForm, setNewsForm] = useState(false);
+    const { data, isError, isLoading, refetch } = useQuery({ queryKey: ["news"], queryFn: fetchNews });
+
     if(isLoading) return <h1 className="text-center text-red-500 text-2xl">Loading...</h1>;
     if(isError) return <h1 className="text-center text-red-500 text-2xl">Terjadi kesalahan!</h1>;
     return (
-        <div className="bg-red-500 py-3 my-3">
-            <Container className="py-3">
-                <h1 className="text-3xl font-extrabold text-white text-center mt-3 mb-5">NEWS</h1>
-                { data.map(dat => <NewsContent data={dat} key={dat.id}/>) }
-            </Container>
-        </div>
+        <>
+            <div className="bg-red-500 py-3 my-3">
+                <Container className="py-3">
+                    <h1 className={"text-3xl font-extrabold text-white text-center mt-3 mb-5" + (isAdmin ? " cursor-pointer" : "")}
+                    onClick={() => isAdmin && setNewsForm(true)}>NEWS
+                    {isAdmin && <span>+</span>}
+                    </h1>
+                    { data.map(dat => <NewsContent data={dat} key={dat.id}/>) }
+                </Container>
+            </div>
+            { isAdmin && <NewsForm state={newsForm} setState={setNewsForm} refetch={refetch}/> }
+        </>
     );  
 }
 
@@ -52,7 +61,21 @@ function ucfirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function NewsType({ type }){
+export const newsTypes = [
+    {
+        label: "Theater",
+        value: "theater"
+    },
+    {
+        label: "New",
+        value: "new"
+    },
+    {
+        label: "Release",
+        value: "release"
+    }
+];
+export function NewsType({ className, type }){
     var color = null;
     switch(type){
         case "theater": color = "bg-blue-500"; break;
@@ -60,5 +83,5 @@ function NewsType({ type }){
         case "release": color = "bg-green-500"; break;
         default: color = "";
     }
-    return <h1 className={"text-sm font-extrabold text-white px-2 py-1 rounded-sm " + color}>{ ucfirst(type) }</h1>
+    return <h1 className={`w-fit text-sm font-extrabold text-white px-2 py-1 rounded-sm ${className} ${color}`}>{ ucfirst(type) }</h1>
 }

@@ -1,12 +1,12 @@
 "use client";
-import Header from "../../components/Header";
-import News from "../../components/news/News";
+import Header from "@/components/Header";
+import News from "@/components/news/News";
 
 export default function Admin(){
     return (
         <main>
             <Header/>
-            <News/>
+            <News isAdmin={true}/>
         </main>
     );
 }
