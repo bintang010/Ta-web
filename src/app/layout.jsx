@@ -1,9 +1,11 @@
-import { ColorSchemeScript, MantineProvider } from '@mantine/core'
+import { ColorSchemeScript } from '@mantine/core';
 
 import '@/app/styles/globals.css';
 import 'animate.css/animate.min.css';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import ServerProviders from './providers/server';
+import ClientProviders from './providers/client';
 
 export const metadata = {
   title: 'Jeketi 48',
@@ -20,7 +22,9 @@ export default function RootLayout({ children }) {
         <ColorSchemeScript/>
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <ServerProviders>
+          <ClientProviders>{children}</ClientProviders>
+        </ServerProviders>
       </body>
     </html>
   )
