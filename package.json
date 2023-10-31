@@ -21,6 +21,7 @@
     "axios": "^1.6.0",
     "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
+    "fs": "^0.0.1-security",
     "mysql2": "^3.6.2",
     "net": "^1.0.2",
     "next": "^14.0.0",
