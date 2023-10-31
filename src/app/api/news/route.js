@@ -1,4 +1,7 @@
 import Client from "@/components/Client";
+import { randomUUID } from "crypto";
+import { writeFileSync } from "fs";
+import path from "path";
 
 export async function GET(){
     const client = Client();
@@ -10,9 +13,15 @@ export async function GET(){
 export async function POST(req){
     const client = Client();
     try {
-        const data = await req.json();
-        const { title, content, type } = data;
-        await client.execute("INSERT INTO news (title, content, type) VALUES (?, ?, ?)", [title, content, type]);
+        const data = await req.formData();
+        const image = data.get("image");
+        const imageName = randomUUID().replaceAll("-", "");
+
+        const imagePath = path.join(process.cwd(), "public/images", imageName);
+        writeFileSync(imagePath, Buffer.from(await image.arrayBuffer()));
+
+        const args = [data.get("title"), data.get("content"), data.get("type"), imageName];
+        await client.execute("INSERT INTO news (title, content, type, image) VALUES (?, ?, ?, ?)", args);
         
         client.end();
         return Response.json(data);
@@ -26,9 +35,23 @@ export async function POST(req){
 export async function PATCH(req){
     const client = Client();
     try {
-        const data = await req.json();
-        const { id, title, content, type } = data;
-        await client.execute("UPDATE news SET title=?, content=?, type=? WHERE id=?", [title, content, type, id]);
+        const data = await req.formData();
+        const image = data.get("image");
+        let imageQuery = "";
+
+        const args = [data.get("title"), data.get("content"), data.get("type")];
+        
+        if(image != null){
+            imageQuery = ", image=?";
+            const imageName = randomUUID().replaceAll("-", "");
+            args.push(imageName);
+
+            const imagePath = path.join(process.cwd(), "public/images", imageName);
+            writeFileSync(imagePath, Buffer.from(await image.arrayBuffer()));
+        }
+        args.push(data.get("id"));
+
+        await client.execute(`UPDATE news SET title=?, content=?, type=?${imageQuery} WHERE id=?`, args);
         
         client.end();
         return Response.json(data);
@@ -43,7 +66,6 @@ export async function DELETE(req){
     const client = Client();
     try {
         const data = await req.json();
-        console.log(data);
         await client.execute("DELETE FROM news WHERE id=?", [data.id]);
 
         client.end();

@@ -7,12 +7,13 @@ const initialNewsFormData = {
         title: "",
         content: "",
         type: defaultType,
+        image: null,
         isEdit: false
     }
 };
 const newsFormDataSlice = createSlice({
     name: 'newsData',
-    initialState: { value: initialNewsFormData },
+    initialState: initialNewsFormData,
     reducers: {
         setNewsData: (state, action) => {
             state.value = action.payload;

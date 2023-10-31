@@ -46,7 +46,7 @@ export default function News({ isAdmin }){
 }
 
 function NewsContent({ data, isAdmin, refetch }){
-    const { id, title, content, type, created_at } = data;
+    const { id, title, content, type, image, created_at } = data;
     data.isEdit = true;
     function editNews(){
         newsFormDataStore.dispatch(setNewsData(data));
@@ -61,7 +61,7 @@ function NewsContent({ data, isAdmin, refetch }){
     return (
         <Grid className="bg-white my-3 animate__animated animate__fadeIn">
             <Grid.Col span={{ base: 12, md: 3 }}>
-                <Image className="animate__animated animate__fadeIn" src={"https://picsum.photos/500"} fallbackSrc="https://placehold.co/400x400?text=404+:("/>
+                <Image className="aspect-square animate__animated animate__fadeIn" src={`${location.origin}/images/${image}`} fallbackSrc="https://placehold.co/400x400?text=404+:("/>
             </Grid.Col>
             <Grid.Col span="auto">
                 <div className="px-3 pb-3 md:px-0 md:pb-0">
