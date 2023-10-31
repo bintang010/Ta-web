@@ -18,6 +18,39 @@ export async function POST(req){
         return Response.json(data);
     } catch(err){
         console.error(err);
+        client.end();
+        return Response.error();
+    }
+}
+
+export async function PATCH(req){
+    const client = Client();
+    try {
+        const data = await req.json();
+        const { id, title, content, type } = data;
+        await client.execute("UPDATE news SET title=?, content=?, type=? WHERE id=?", [title, content, type, id]);
+        
+        client.end();
+        return Response.json(data);
+    } catch(err){
+        console.error(err);
+        client.end();
+        return Response.error();
+    }
+}
+
+export async function DELETE(req){
+    const client = Client();
+    try {
+        const data = await req.json();
+        console.log(data);
+        await client.execute("DELETE FROM news WHERE id=?", [data.id]);
+
+        client.end();
+        return Response.json(data);
+    } catch(err){
+        console.error(err);
+        client.end();
         return Response.error();
     }
 }
