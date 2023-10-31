@@ -24,12 +24,13 @@ export default function NewsForm({ refetch }){
         for(const key in data){
             formData.append(key, data[key]);
         }
-        if(isEdit){
-            formData.delete("image");
-            if(file != null) formData.append("image", file);
-        } else {
-            if(file == null) return alert("Image is required!");
-        }
+        if(data.title === "" || data.content === "")
+            return alert("Input tidak boleh kosong!");
+
+        formData.delete("image");
+        if(isEdit && file != null) formData.append("image", file);
+        else if(!isEdit && file == null) return alert("Gambar berita diperlukan!");
+        else if(!isEdit && file != null) formData.append("image", file);
 
         await axios({
             method: isEdit ? "PATCH" : "POST",

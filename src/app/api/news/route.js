@@ -1,6 +1,6 @@
 import Client from "@/components/Client";
 import { randomUUID } from "crypto";
-import { writeFileSync } from "fs";
+import { rmSync, writeFileSync } from "fs";
 import path from "path";
 
 export async function GET(){
@@ -42,6 +42,8 @@ export async function PATCH(req){
         const args = [data.get("title"), data.get("content"), data.get("type")];
         
         if(image != null){
+            await deleteImageById(client, data.get("id"));
+
             imageQuery = ", image=?";
             const imageName = randomUUID().replaceAll("-", "");
             args.push(imageName);
@@ -65,14 +67,22 @@ export async function PATCH(req){
 export async function DELETE(req){
     const client = Client();
     try {
-        const data = await req.json();
-        await client.execute("DELETE FROM news WHERE id=?", [data.id]);
+        const { id } = await req.json();
+        await deleteImageById(client, id);
+        await client.execute("DELETE FROM news WHERE id=?", [id]);
 
         client.end();
-        return Response.json(data);
+        return Response.json(true);
     } catch(err){
         console.error(err);
         client.end();
         return Response.error();
     }
+}
+
+async function deleteImageById(client, id){
+    const query = await client.query("SELECT image FROM news WHERE id=?", id);
+    const deleteImageName = query[0][0].image;
+    const deleteImagePath = path.join(process.cwd(), "public/images", deleteImageName); 
+    rmSync(deleteImagePath);
 }
