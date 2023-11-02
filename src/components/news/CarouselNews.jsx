@@ -12,7 +12,7 @@ async function fetchCarousel(){
     return await res.json();
 }
 
-function Slide({ isBtnAdd, image, refetch }){
+function Slide({ isBtnAdd, image, refetch, isAdmin }){
     const inputFile = useRef(null);
     async function uploadImage(e){
         const file = e.currentTarget.files[0];
@@ -37,12 +37,12 @@ function Slide({ isBtnAdd, image, refetch }){
     }
     return (
         <>
-            <Carousel.Slide className={"min-h-[30rem] cursor-pointer " + (isBtnAdd ? "flex justify-center items-center bg-gray-500" : "")}
-                onClick={() => isBtnAdd ? inputFile.current.click() : deleteImage()}>
+            <Carousel.Slide className={"min-h-[30rem] w-1/3 " + (isBtnAdd ? "flex justify-center items-center bg-gray-500 " : "") + (isAdmin ? "cursor-pointer" : "")}
+                onClick={() => isAdmin && (isBtnAdd ? inputFile.current.click() : deleteImage())}>
                 { isBtnAdd ? <FontAwesomeIcon className="text-[5rem] text-white" icon={faPlusCircle}/>
                 : <Image className="w-full h-full animate__animated animate__fadeIn" src={`${location.origin}/carousel/${image}`}/> }
+                <input className="hidden" ref={inputFile} type="file" accept=".jpg,.jpeg,.png" onChange={uploadImage}/>
             </Carousel.Slide>
-            <input className="hidden" ref={inputFile} type="file" accept=".jpg,.jpeg,.png" onChange={uploadImage}/>
         </>
     );
 }
@@ -53,14 +53,15 @@ export default function CarouselNews({ isAdmin }){
     if(isLoading) return <></>;
     if(isError) return <h1 className="text-center text-red-500 text-2xl">Terjadi kesalahan!</h1>;
     return (
-        <Carousel withIndicators withControls loop
+        <Carousel
+            withIndicators={true} withControls={true} loop={true}
             slideSize={{ base: '100%', sm: '50%'}}
             plugins={[autoplay.current]}
             onMouseEnter={autoplay.current.stop}
             onMouseLeave={autoplay.current.reset}
             className="animate__animated animate__fadeIn">
-            { data.map((img, i) => <Slide refetch={refetch} image={img} key={i}/>) }
-            { isAdmin && <Slide isBtnAdd={true} refetch={refetch}/> }
+            { data.map((img, i) => <Slide refetch={refetch} isAdmin={isAdmin} image={img} key={i}/>) }
+            { isAdmin && <Slide isBtnAdd={true} isAdmin={isAdmin} refetch={refetch}/> }
         </Carousel>
     );
 }
