@@ -3,11 +3,25 @@ import { randomUUID } from "crypto";
 import { rmSync, writeFileSync } from "fs";
 import path from "path";
 
-export async function GET(){
+export async function GET(req){
+    const searchParams = req.nextUrl.searchParams;
+
     const client = Client();
-    const query = await client.query("SELECT * FROM news");
+    const hasId = searchParams.has("id");
+    const args = ["SELECT * FROM news"];
+    if(hasId){
+        args[0] += " WHERE id=?";
+        args.push([searchParams.get("id")]);
+    }
+
+    const query = await client.query(...args);
     client.end();
-    return Response.json(query[0]);
+
+    let resp = null;
+    if(hasId && query[0].length > 0) resp = query[0][0];
+    else if(hasId && query[0].length === 0) resp = {};
+    else resp = query[0];
+    return Response.json(resp);
 }
 
 export async function POST(req){

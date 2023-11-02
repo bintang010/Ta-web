@@ -22,9 +22,7 @@ export default function Login(){
 
     return (
         <main>
-            <div className="fixed w-full border-b-[1px] border-red-500">
-                <Header/>
-            </div>
+            <Header border/>
             <Container className="h-screen">
                 <Center className="h-4/6 w-full">
                     <div className="w-full">

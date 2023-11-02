@@ -6,6 +6,7 @@ import newsFormStateStore, { setNewsFormState } from "../admin/news/NewsFormStat
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 async function fetchNews(){
     const res = await fetch(location.origin + "/api/news");
@@ -30,9 +31,8 @@ export default function News({ isAdmin }){
         <>
             <div className="bg-red-500 py-3 my-3">
                 <Container className="py-3">
-                    <h1 className={"text-3xl font-extrabold text-white text-center mt-3 mb-5" + (isAdmin ? " cursor-pointer" : "")}
-                    onClick={createNews}>NEWS
-                    {isAdmin && <span>+</span>}
+                    <h1 className="text-3xl font-extrabold text-white text-center mt-3 mb-5">
+                        <span className={isAdmin ? "cursor-pointer" : ""} onClick={createNews}>NEWS{isAdmin && " +"}</span>
                     </h1>
                     {
                         data.length > 0 ? data.map(dat => <NewsContent data={dat} refetch={refetch} isAdmin={isAdmin} key={dat.id}/>)
@@ -46,6 +46,7 @@ export default function News({ isAdmin }){
 }
 
 function NewsContent({ data, isAdmin, refetch }){
+    const router = useRouter();
     const { id, title, content, type, image, created_at } = data;
     data.isEdit = true;
     function editNews(){
@@ -59,7 +60,8 @@ function NewsContent({ data, isAdmin, refetch }){
         refetch();
     }
     return (
-        <Grid className="bg-white my-3 animate__animated animate__fadeIn">
+        <Grid className="bg-white my-3 cursor-pointer animate__animated animate__fadeIn"
+            onClick={() => router.push("/news?id=" + id)}>
             <Grid.Col span={{ base: 12, md: 3 }}>
                 <Image className="aspect-square animate__animated animate__fadeIn" src={`${location.origin}/images/${image}`} fallbackSrc="https://placehold.co/400x400?text=404+:("/>
             </Grid.Col>
@@ -82,7 +84,7 @@ function NewsContent({ data, isAdmin, refetch }){
     );
 }
 
-function formatDate(datetime){
+export function formatDate(datetime){
     const date = new Date(datetime);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return Intl.DateTimeFormat("id-ID", options).format(date);
