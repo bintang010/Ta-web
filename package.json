@@ -28,8 +28,7 @@
     "pg-hstore": "^2.3.4",
     "react": "^18",
     "react-dom": "^18",
-    "tls": "^0.0.1",
-    "uuid": "^9.0.1"
+    "tls": "^0.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",

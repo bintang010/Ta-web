@@ -1,10 +1,11 @@
+"use client";
 import { Container, Grid, Group, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import NewsForm from "../admin/news/NewsForm";
 import newsFormDataStore, { initialNewsFormData, setNewsData } from "../admin/news/NewsStore";
 import newsFormStateStore, { setNewsFormState } from "../admin/news/NewsFormState";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFileLines, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -56,12 +57,15 @@ function NewsContent({ data, isAdmin, refetch }){
     async function deleteNews(){
         const res = await confirm("Apakah kamu yakin akan menghapus berita ini?");
         if(!res) return;
-        await axios.delete(location.origin + "/api/news", { data: { id } });
+        await axios.delete(location.origin + "/api/admin/news", { data: { id } });
         refetch();
     }
+    function viewNews(){
+        router.push("/news?id=" + id)
+    }
     return (
-        <Grid className="bg-white my-3 cursor-pointer animate__animated animate__fadeIn"
-            onClick={() => router.push("/news?id=" + id)}>
+        <Grid className={"bg-white my-3 animate__animated animate__fadeIn " + (!isAdmin ? "cursor-pointer" : "")}
+            onClick={() => !isAdmin && viewNews()}>
             <Grid.Col span={{ base: 12, md: 3 }}>
                 <Image className="aspect-square animate__animated animate__fadeIn" src={`${location.origin}/images/${image}`} fallbackSrc="https://placehold.co/400x400?text=404+:("/>
             </Grid.Col>
@@ -74,6 +78,7 @@ function NewsContent({ data, isAdmin, refetch }){
                         <>
                             <FontAwesomeIcon className="text-2xl text-yellow-500 cursor-pointer" icon={faPencil} onClick={editNews}/>
                             <FontAwesomeIcon className="text-2xl text-red-500 cursor-pointer" icon={faTrash} onClick={deleteNews}/>
+                            <FontAwesomeIcon className="text-2xl text-green-500 cursor-pointer" icon={faFileLines} onClick={viewNews}/>
                         </>}
                         <NewsType type={type}/>
                         <h1 className="text-sm text-gray-600">{ formatDate(created_at) }</h1>

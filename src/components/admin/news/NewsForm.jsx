@@ -34,7 +34,7 @@ export default function NewsForm({ refetch }){
 
         await axios({
             method: isEdit ? "PATCH" : "POST",
-            url: location.origin + "/api/news",
+            url: location.origin + "/api/admin/news",
             data: formData,
             headers: { "Content-Type": "multipart/form-data" }
         });
