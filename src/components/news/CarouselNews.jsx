@@ -47,7 +47,7 @@ function Slide({ isBtnAdd, image, refetch }){
     );
 }
 
-export default function CarouselNews(){
+export default function CarouselNews({ isAdmin }){
     const { data, isError, isLoading, refetch } = useQuery({ queryKey: ["carousel"], queryFn: fetchCarousel });
     const autoplay = useRef(emblaCarouselAutoplay({ delay: 4000 }));
     if(isLoading) return <></>;
@@ -60,7 +60,7 @@ export default function CarouselNews(){
             onMouseLeave={autoplay.current.reset}
             className="animate__animated animate__fadeIn">
             { data.map((img, i) => <Slide refetch={refetch} image={img} key={i}/>) }
-            <Slide isBtnAdd={true} refetch={refetch}/>
+            { isAdmin && <Slide isBtnAdd={true} refetch={refetch}/> }
         </Carousel>
     );
 }

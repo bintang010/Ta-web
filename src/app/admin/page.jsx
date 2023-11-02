@@ -7,7 +7,7 @@ export default function Home(){
     return (
         <main>
             <Header/>
-            <CarouselNews/>
+            <CarouselNews isAdmin={true}/>
             <News isAdmin={true}/>
         </main>
     );
