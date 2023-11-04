@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { rmSync, writeFileSync } from "fs";
 import path from "path";
 
-export async function POST(req){
+export async function POST(req) {
     const client = Client();
     try {
         const data = await req.formData();
@@ -15,17 +15,17 @@ export async function POST(req){
 
         const args = [data.get("title"), data.get("content"), data.get("type"), imageName];
         await client.execute("INSERT INTO news (title, content, type, image) VALUES (?, ?, ?, ?)", args);
-        
-        client.end();
+
+        await client.end();
         return Response.json(data);
-    } catch(err){
+    } catch (err) {
         console.error(err);
-        client.end();
+        await client.end();
         return Response.error();
     }
 }
 
-export async function PATCH(req){
+export async function PATCH(req) {
     const client = Client();
     try {
         const data = await req.formData();
@@ -33,8 +33,8 @@ export async function PATCH(req){
         let imageQuery = "";
 
         const args = [data.get("title"), data.get("content"), data.get("type")];
-        
-        if(image != null){
+
+        if (image != null) {
             await deleteImageById(client, data.get("id"));
 
             imageQuery = ", image=?";
@@ -47,35 +47,35 @@ export async function PATCH(req){
         args.push(data.get("id"));
 
         await client.execute(`UPDATE news SET title=?, content=?, type=?${imageQuery} WHERE id=?`, args);
-        
-        client.end();
+
+        await client.end();
         return Response.json(data);
-    } catch(err){
+    } catch (err) {
         console.error(err);
-        client.end();
+        await client.end();
         return Response.error();
     }
 }
 
-export async function DELETE(req){
+export async function DELETE(req) {
     const client = Client();
     try {
         const { id } = await req.json();
         await deleteImageById(client, id);
         await client.execute("DELETE FROM news WHERE id=?", [id]);
 
-        client.end();
+        await client.end();
         return Response.json(true);
-    } catch(err){
+    } catch (err) {
         console.error(err);
-        client.end();
+        await client.end();
         return Response.error();
     }
 }
 
-async function deleteImageById(client, id){
+async function deleteImageById(client, id) {
     const query = await client.query("SELECT image FROM news WHERE id=?", id);
     const deleteImageName = query[0][0].image;
-    const deleteImagePath = path.join(process.cwd(), "public/images", deleteImageName); 
+    const deleteImagePath = path.join(process.cwd(), "public/images", deleteImageName);
     rmSync(deleteImagePath);
 }
