@@ -17,7 +17,7 @@ export default function Login(){
         setLoginResult("loading");
         var res = await axios.post(location.origin + "/api/admin/login", { username, password });
         setLoginResult(res.data);
-        if(res.data == "success") router.push("/");
+        if(res.data == "success") router.push("/admin");
     }
 
     return (
