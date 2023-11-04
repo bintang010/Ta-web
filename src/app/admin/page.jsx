@@ -7,10 +7,10 @@ import News from "@/components/news/News";
 export default function Home(){
     return (
         <main>
-            <Header/>
+            <Header isAdmin={true}/>
             <CarouselNews isAdmin={true}/>
             <News isAdmin={true}/>
-            <Members/>
+            <Members isAdmin={true}/>
         </main>
     );
 }

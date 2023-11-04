@@ -15,7 +15,7 @@ export async function POST(req) {
         data = "error";
         console.error(err);
     }
-    await client.end();
+    client.end();
 
     return NextResponse.json(data);
 }

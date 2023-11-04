@@ -61,7 +61,7 @@ function Member({ isBtnAdd, isAdmin, data, refetch }){
                         <TextInput placeholder="Nama Member" size="md" variant="unstyled" className="text-center mt-2 bg-pink-300 py-[.325rem] rounded-md input-member"
                             onChange={e => setName(e.currentTarget.value)} onKeyDown={e => e.key === "Enter" && addMember()} value={name}/>
                         {
-                            !isBtnAdd && <div className="absolute top-0 right-0 me-2 translate-y-1/2">
+                            isAdmin && !isBtnAdd && <div className="absolute top-0 right-0 me-2 translate-y-1/2">
                                 <FontAwesomeIcon className="text-2xl text-red-500 cursor-pointer ms-3" onClick={deleteMember} icon={faTrash}/>
                             </div>
                         }
@@ -78,7 +78,7 @@ async function fetchMembers(){
     return await res.json();
 }
 
-export default function Members(){
+export default function Members({ isAdmin  }){
     const { data, isError, isLoading, refetch } = useQuery({ queryKey: ["members"], queryFn: fetchMembers });
     if(isLoading) return <></>;
     if(isError) return <h1 className="text-center text-red-500 text-2xl">Terjadi kesalahan!</h1>;
@@ -89,8 +89,9 @@ export default function Members(){
             </Center>
             <Container className="my-5">
                 <Grid gutter="sm" className="px-2 py-2">
-                    { data.map((dat, i) => <Member data={dat} isAdmin={true} key={i} refetch={refetch}/>) }
-                    <Member isBtnAdd={true} isAdmin={true} refetch={refetch}/>
+                    { data.map((dat, i) => <Member data={dat} isAdmin={isAdmin} key={i} refetch={refetch}/>) }
+                    { isAdmin && <Member isBtnAdd={true} isAdmin={isAdmin} refetch={refetch}/> }
+                    { data.length < 1 && !isAdmin && <h1 className="w-full text-center text-pink-700 text-2xl">Tidak ada members...</h1> }
                 </Grid>
             </Container>
         </>

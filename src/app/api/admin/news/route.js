@@ -16,11 +16,11 @@ export async function POST(req) {
         const args = [data.get("title"), data.get("content"), data.get("type"), imageName];
         await client.execute("INSERT INTO news (title, content, type, image) VALUES (?, ?, ?, ?)", args);
 
-        await client.end();
+        client.end();
         return Response.json(data);
     } catch (err) {
         console.error(err);
-        await client.end();
+        client.end();
         return Response.error();
     }
 }
@@ -48,11 +48,11 @@ export async function PATCH(req) {
 
         await client.execute(`UPDATE news SET title=?, content=?, type=?${imageQuery} WHERE id=?`, args);
 
-        await client.end();
+        client.end();
         return Response.json(data);
     } catch (err) {
         console.error(err);
-        await client.end();
+        client.end();
         return Response.error();
     }
 }
@@ -64,11 +64,11 @@ export async function DELETE(req) {
         await deleteImageById(client, id);
         await client.execute("DELETE FROM news WHERE id=?", [id]);
 
-        await client.end();
+        client.end();
         return Response.json(true);
     } catch (err) {
         console.error(err);
-        await client.end();
+        client.end();
         return Response.error();
     }
 }

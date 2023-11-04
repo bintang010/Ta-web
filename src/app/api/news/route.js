@@ -12,7 +12,7 @@ export async function GET(req) {
     }
 
     const query = await client.query(...args);
-    await client.end();
+    client.end();
 
     let resp = null;
     if (hasId && query[0].length > 0) resp = query[0][0];

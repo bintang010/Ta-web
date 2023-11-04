@@ -14,7 +14,7 @@ export async function POST(req) {
         writeFileSync(imagePath, Buffer.from(await image.arrayBuffer()));
 
         await client.execute("INSERT INTO members (name, image) VALUES (?, ?)", [data.get("name"), imageName]);
-        await client.end();
+        client.end();
         return Response.json(true);
     } catch (err) {
         console.error(err);
@@ -44,7 +44,7 @@ export async function PATCH(req) {
 
         await client.execute(`UPDATE members SET name=?${imageQuery} WHERE id=?`, args);
 
-        await client.end();
+        client.end();
         return Response.json(data);
     } catch (err) {
         console.error(err);
@@ -59,7 +59,7 @@ export async function DELETE(req) {
         await deleteImageById(client, id);
         await client.execute("DELETE FROM members WHERE id=?", [id]);
 
-        await client.end();
+        client.end();
         return Response.json(true);
     } catch (err) {
         console.error(err);
