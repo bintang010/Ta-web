@@ -3,7 +3,7 @@ export default function Client(){
     return mysql.createPool({
         host: 'localhost',
         user: 'root',
-        password: 'adp050107',
+        password: '',
         database: 'jeketi'
     });
 }
